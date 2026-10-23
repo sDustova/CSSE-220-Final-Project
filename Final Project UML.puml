@@ -1,0 +1,93 @@
+@startuml
+
+title Rose Runner - Class Diagram
+
+class RoseRunnerApp {
+    +start()
+    +showWelcomeScene()
+    +showLevelSelectScene()
+    +showGameScene()
+    +showEndScene()
+}
+
+class Player {
+    -name : String
+    -fastestTimes : Map
+    +moveLeft()
+    +moveRight()
+    +jump()
+    +collectPoint()
+}
+
+class Level {
+    -levelNumber : int
+    -isUnlocked : boolean
+    -requiredPoints : int
+    +loadLevel()
+    +checkCompletion()
+}
+
+class TutorialLevel {
+    +showInstructions()
+}
+
+class RosePoint {
+    -collected : boolean
+    +collect()
+}
+
+class Timer {
+    -currentTime : double
+    +start()
+    +stop()
+    +reset()
+}
+
+class ScoreManager {
+    -fastestTimes : Map
+    +saveTime(playerName, time)
+    +getBestTime(level)
+}
+
+class WelcomeScene {
+    +enterName()
+    +startGame()
+}
+
+class LevelSelectScene {
+    +displayLevels()
+    +selectLevel()
+}
+
+class GameScene {
+    +displayHUD()
+    +updateGame()
+}
+
+class EndScene {
+    +showResults()
+}
+
+RoseRunnerApp --> WelcomeScene
+RoseRunnerApp --> LevelSelectScene
+RoseRunnerApp --> GameScene
+RoseRunnerApp --> EndScene
+
+Player --> Timer
+Player --> RosePoint : collects
+
+Level <|-- TutorialLevel
+
+GameScene --> Player
+GameScene --> Level
+GameScene --> Timer
+
+Level "1" *-- "many" RosePoint
+
+ScoreManager --> Player
+ScoreManager --> Level
+
+LevelSelectScene --> Level
+WelcomeScene --> Player
+
+@enduml
