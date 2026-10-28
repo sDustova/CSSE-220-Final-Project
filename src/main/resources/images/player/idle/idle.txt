@@ -1,1 +1,1 @@
-
+this folder stores the animation frame's for the player idle position; each .png file is a frame for the idle animation
