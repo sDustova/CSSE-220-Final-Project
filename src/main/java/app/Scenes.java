@@ -1,3 +1,5 @@
+package app;
+
 import javafx.application.Application;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -5,13 +7,12 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class GameImageExample extends Application {
+public class Scenes extends Application {
     @Override
     public void start(Stage stage) {
         // Load image from classpath (resources folder)
         Image image = new Image(
-                getClass().getResource("/images/game.png)
-                );
+                getClass().getResource("/images/FAB.png").toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(200);
         imageView.setFitHeight(200);
@@ -22,6 +23,7 @@ public class GameImageExample extends Application {
     }
 
     public static void main(String[] args) {
+
         launch(args);
     }
 }
