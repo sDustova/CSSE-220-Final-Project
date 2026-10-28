@@ -3,11 +3,9 @@ package app;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Rotate;
 
 public class Platform {
     private final Group view;
-    private final Rotate turn = new Rotate(0, 30, 10);
     private Color color = Color.RED;
 
     public Platform() {
