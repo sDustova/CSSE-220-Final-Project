@@ -6,13 +6,13 @@ import javafx.scene.image.ImageView;
 
 public class Coin {
     private final Group view;
-    private final double FIT_HIEGHT = 150;
+    private final double FIT_HEIGHT = 150;
     private final double FIT_WIDTH= 150;
 
     public Coin(){
         Image image = null;
         ImageView coin = new ImageView(image);
-        coin.setFitHeight(FIT_HIEGHT);
+        coin.setFitHeight(FIT_HEIGHT);
         coin.setFitWidth(FIT_WIDTH);
         coin.setPreserveRatio(true);
         view = new Group(coin);
@@ -20,7 +20,7 @@ public class Coin {
     public Coin(double x, double y){
         Image image = null;
         ImageView coin = new ImageView(image);
-        coin.setFitHeight(FIT_HIEGHT);
+        coin.setFitHeight(FIT_HEIGHT);
         coin.setFitWidth(FIT_WIDTH);
         coin.setPreserveRatio(true);
         coin.setX(x);
