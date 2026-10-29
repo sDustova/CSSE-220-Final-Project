@@ -6,7 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="cb8786f9-2a60-4461-a3d8-df447f9f33f2" name="Changes" comment="Working on Scenes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/app/Scenes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Scenes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/app/StarterApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/StarterApp.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/images/Chapel.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/Chapel.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/images/Moench.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/Moench.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/images/Union.png" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/images/Union.png" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,6 +48,7 @@
   "keyToString": {
     "Application.Scenes.executor": "Run",
     "Maven.FinalProject.executor": "Run",
+    "Maven.Scenes.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
