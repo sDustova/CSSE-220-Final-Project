@@ -10,9 +10,8 @@ import javafx.stage.Stage;
 public class Scenes extends Application {
     @Override
     public void start(Stage stage) {
-        // Load image from classpath (resources folder)
         Image image = new Image(
-                getClass().getResource("/images/FAB.png").toExternalForm());
+                getClass().getResource("/images/Chapel.png").toExternalForm());
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(200);
         imageView.setFitHeight(200);

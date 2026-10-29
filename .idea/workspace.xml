@@ -4,13 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cb8786f9-2a60-4461-a3d8-df447f9f33f2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_10_23_2026_12_17_PM__Changes_.xml" beforeDir="false" />
+    <list default="true" id="cb8786f9-2a60-4461-a3d8-df447f9f33f2" name="Changes" comment="Working on Scenes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/milestone1-starter.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/app/Scenes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/app/Scenes.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +67,7 @@
       <recent name="C:\Users\tooleyeb\local\coding\Java\CSSE220\FinalProject\FinalProject" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Scenes">
+  <component name="RunManager" selected="Maven.Scenes">
     <configuration name="Scenes" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="app.Scenes" />
       <module name="milestone1-starter" />
@@ -117,6 +112,41 @@
       </MavenSettings>
       <method v="2" />
     </configuration>
+    <configuration name="Scenes" type="MavenRunConfiguration" factoryName="Maven">
+      <MavenSettings>
+        <option name="myGeneralSettings" />
+        <option name="myRunnerSettings" />
+        <option name="myRunnerParameters">
+          <MavenRunnerParameters>
+            <option name="cmdOptions" />
+            <option name="profiles">
+              <set />
+            </option>
+            <option name="goals">
+              <list>
+                <option value="javafx:run" />
+              </list>
+            </option>
+            <option name="multimoduleDir" />
+            <option name="pomFileName" />
+            <option name="profilesMap">
+              <map />
+            </option>
+            <option name="projectsCmdOptionValues">
+              <list />
+            </option>
+            <option name="resolveToWorkspace" value="false" />
+            <option name="workingDirPath" value="$PROJECT_DIR$" />
+          </MavenRunnerParameters>
+        </option>
+      </MavenSettings>
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Application.Scenes" />
+      <item itemvalue="Maven.Scenes" />
+      <item itemvalue="Maven.FinalProject" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Scenes" />
@@ -159,6 +189,22 @@
     <MESSAGE value="add pom.xml" />
     <MESSAGE value="move application entrypoint to package &quot;app&quot;" />
     <MESSAGE value="update package for application entrypoint" />
-    <option name="LAST_COMMIT_MESSAGE" value="update package for application entrypoint" />
+    <MESSAGE value="Working on Scenes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Working on Scenes" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/main/java/app/Scenes.java</url>
+          <line>23</line>
+          <properties class="app.Scenes" method="main">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
