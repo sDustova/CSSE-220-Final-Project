@@ -1,10 +1,12 @@
 package entities;
 
+import behaviors.Collidable;
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class Platform {
+public class Platform implements Collidable {
     private final Group view;
     private Color color = Color.RED;
 
@@ -37,4 +39,14 @@ public class Platform {
     }
 
     public Group getView() {return view;}
+
+    @Override
+    public boolean isColliding(Collidable b) {
+        return getBounds().intersects(b.getBounds());
+    }
+
+    @Override
+    public Bounds getBounds() {
+        return view.getBoundsInLocal();
+    }
 }

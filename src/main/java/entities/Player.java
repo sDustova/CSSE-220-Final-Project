@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Map;
 
 import behaviors.Collidable;
-import game.Timer;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import level.LevelTimer;
 
 /**
  * The player character. Handles left/right movement, jumping, gravity,
@@ -106,7 +106,7 @@ public class Player implements Collidable {
      * and has now reached or passed its top edge.
      */
     private void landOnPlatform(Platform platform, double oldBottom) {
-        Bounds box = platform.getView().getBoundsInParent();
+        Bounds box = platform.getBounds();
 
         boolean fallingDown = velocityY >= 0;
         boolean overlapsSideways = x + WIDTH > box.getMinX() && x < box.getMaxX();
@@ -139,16 +139,13 @@ public class Player implements Collidable {
 
     // ----- Points and times -----
 
-    /** Collects the point if it hasn't been collected yet. */
-    public void collectPoint(RosePoint point) {
-        if (!point.isCollected()) {
-            point.collect();
-            pointsCollected++;
-        }
+    /** Call when the player touches a Rose Point (check with isColliding). */
+    public void collectPoint() {
+        pointsCollected++;
     }
 
     /** Saves the level timer's time as this player's time for the level. */
-    public void finishLevel(int levelNumber, Timer timer) {
+    public void finishLevel(int levelNumber, LevelTimer timer) {
         recordTime(levelNumber, timer.getCurrentTime());
     }
 
