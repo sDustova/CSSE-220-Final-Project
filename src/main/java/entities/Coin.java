@@ -1,4 +1,4 @@
-package app;
+package entities;
 
 import javafx.scene.Group;
 import javafx.scene.image.Image;
