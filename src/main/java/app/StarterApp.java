@@ -1,34 +1,24 @@
 package app;
 
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import level.LevelManager;
 
 /**
  * Starter JavaFX app for CSSE220 Milestone 1.
  * Replace this simple window with the first version of your project.
  */
 public class StarterApp extends Application {
-    private final LevelManager levelManager = new LevelManager();
 
     @Override
     public void start(Stage stage) {
         // TODO 1: Choose a simple app title and create a small root layout.
         Label titleLabel = new Label("CSSE220 Final Project");
-        Label statusLabel = new Label();
-        statusLabel.textProperty().bind(
-                Bindings.createStringBinding(
-                        () -> "Time: " + this.levelManager.getTimer().getCurrentTime(),
-                        this.levelManager.getTimer().getCurrentTimeProperty()
-                )
-        );
-        this.levelManager.setCurrentLevel(1);
+        Label statusLabel = new Label("Starter app is ready.");
 
         // TODO 2: Add your first interactive control (button, text field, etc.).
         Button actionButton = new Button("Tap to update status");
