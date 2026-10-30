@@ -1,0 +1,1 @@
+player idle animation, each .png file is a animation frame
