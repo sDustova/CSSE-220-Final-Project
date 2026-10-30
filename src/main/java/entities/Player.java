@@ -44,6 +44,7 @@ public class Player implements Collidable {
         this.x = startX;
         this.y = startY;
 
+        // TODO: swap this rectangle for Frankie's player animation frames
         body = new Rectangle(x, y, WIDTH, HEIGHT);
         body.setFill(Color.MAROON);
         body.setStroke(Color.BLACK);
