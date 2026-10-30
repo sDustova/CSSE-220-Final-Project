@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import behaviors.Collidable;
+import game.Timer;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -16,7 +18,7 @@ import javafx.scene.shape.Rectangle;
  * Speeds are in pixels per frame. The game loop should call update()
  * once every frame (about 60 times a second with an AnimationTimer).
  */
-public class Player {
+public class Player implements Collidable {
     private static final double WIDTH = 30;
     private static final double HEIGHT = 50;
     private static final double MOVE_SPEED = 4;      // sideways speed
@@ -26,7 +28,7 @@ public class Player {
 
     private final Group view;
     private final Rectangle body;
-    private final String name;
+    private String name;
     private final Map<Integer, Double> fastestTimes = new HashMap<>(); // level number -> best time
     private int pointsCollected = 0;
 
@@ -118,10 +120,36 @@ public class Player {
         }
     }
 
+    /** Puts the player at (newX, newY) standing still. Used for respawning. */
+    public void moveTo(double newX, double newY) {
+        x = newX;
+        y = newY;
+        velocityX = 0;
+        velocityY = 0;
+        onGround = false;
+        body.setX(x);
+        body.setY(y);
+    }
+
+    /** Gets the player ready for a new level: back to the start with 0 points. */
+    public void resetForLevel(double startX, double startY) {
+        moveTo(startX, startY);
+        pointsCollected = 0;
+    }
+
     // ----- Points and times -----
 
-    public void collectPoint() {
-        pointsCollected++;
+    /** Collects the point if it hasn't been collected yet. */
+    public void collectPoint(RosePoint point) {
+        if (!point.isCollected()) {
+            point.collect();
+            pointsCollected++;
+        }
+    }
+
+    /** Saves the level timer's time as this player's time for the level. */
+    public void finishLevel(int levelNumber, Timer timer) {
+        recordTime(levelNumber, timer.getCurrentTime());
     }
 
     /** Saves the time only if it beats the old best for that level. */
@@ -141,10 +169,18 @@ public class Player {
 
     public Group getView() {return view;}
 
-    /** Useful for checking if the player touches a coin. */
+    @Override
     public Bounds getBounds() {return view.getBoundsInParent();}
 
+    /** True if this player's box overlaps the other object's box. */
+    @Override
+    public boolean isColliding(Collidable other) {
+        return getBounds().intersects(other.getBounds());
+    }
+
     public String getName() {return name;}
+
+    public void setName(String name) {this.name = name;}
 
     public int getPointsCollected() {return pointsCollected;}
 
