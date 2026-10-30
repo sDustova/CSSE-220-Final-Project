@@ -1,0 +1,1 @@
+coin animation, each .png file is a animation frame
