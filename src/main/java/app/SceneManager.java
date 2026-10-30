@@ -21,7 +21,11 @@ public class SceneManager {
 
     public void showWelcome()     { scene.setRoot(new WelcomeView(this, W, H).getRoot()); }
     public void showLevelSelect() { scene.setRoot(new LevelSelectView(this, W, H).getRoot()); }
-    public void startLevel(int i) { scene.setRoot(new GameScene(Levels.ALL.get(i), W, H).getRoot()); }
+    public void startLevel(int i) {
+        GameScene game = new GameScene(this, i, W, H); // PLAYER HOOK: GameScene now needs the manager and level index
+        scene.setRoot(game.getRoot());
+        game.getRoot().requestFocus();                 // PLAYER HOOK: so key presses reach the game
+    }
     public void showEnd()         { scene.setRoot(new EndView(this, W, H).getRoot()); }
 
     public void setPlayerName(String n) { playerName = n; }
