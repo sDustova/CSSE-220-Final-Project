@@ -3,6 +3,7 @@ package app;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Coin; // COIN HOOK
 import entities.Platform;
 import entities.Player;
 import javafx.animation.AnimationTimer;
@@ -10,8 +11,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import level.LevelTimer;
 
 public class GameScene {
@@ -22,7 +21,7 @@ public class GameScene {
     private final double h;
 
     private final List<Platform> platforms = new ArrayList<>();
-    private final List<Circle> rosePoints = new ArrayList<>(); // TODO: swap Circles for Coin (or RosePoint) entities once Coin has an image
+    private final List<Coin> rosePoints = new ArrayList<>(); // COIN HOOK: Rose Points are spinning Coins
     private final Player player;
     private final LevelTimer timer = new LevelTimer();
     private final AnimationTimer gameLoop;
@@ -47,9 +46,9 @@ public class GameScene {
             root.getChildren().add(platform.getView());
         }
         for (Point2D pt : level.rosePoints()) {
-            Circle point = new Circle(pt.getX(), pt.getY(), 10, Color.GOLD);
-            rosePoints.add(point);
-            root.getChildren().add(point);
+            Coin coin = new Coin(pt.getX(), pt.getY()); // COIN HOOK: centered on the point
+            rosePoints.add(coin);                        // COIN HOOK
+            root.getChildren().add(coin.getView());      // COIN HOOK
         }
 
         // PLAYER HOOK: add the player at the level's spawn point and listen for keys
@@ -85,10 +84,14 @@ public class GameScene {
         player.update(platforms);
 
         // Collect any Rose Point the player touches
-        for (Circle point : rosePoints) {
-            if (point.isVisible() && player.getBounds().intersects(point.getBoundsInParent())) {
-                point.setVisible(false);
-                player.collectPoint();
+        // COIN HOOK: spin each coin that is still showing, and collect it if touched
+        for (Coin coin : rosePoints) {
+            if (coin.isVisible()) {
+                coin.update();
+                if (player.isColliding(coin)) {
+                    coin.setVisible(false);
+                    player.collectPoint();
+                }
             }
         }
 
