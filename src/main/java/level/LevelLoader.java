@@ -1,5 +1,6 @@
 package level;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 
@@ -17,14 +18,15 @@ public class LevelLoader {
         this.levels = new ArrayList<>();
     }
 
+    public ArrayList<Level> getLevels() {
+        return this.levels;
+    }
+
     public void loadLevels() {
         if (!this.levels.isEmpty()) return;
 
         ArrayList<String[]> parsedLines = this.parseLines();
-
-        for (String[] line : parsedLines) {
-            System.out.println(Arrays.toString(line));
-        }
+        this.createLevels(parsedLines);
     }
 
     private ArrayList<String[]> parseLines() {
@@ -47,19 +49,37 @@ public class LevelLoader {
         return lines;
     }
 
-    private Level createLevels(String[] parsedLevel) {
-        String name = "";
-        String filePath = "";
-        Point2D spawn = new Point2D(0, 0);
-        ArrayList<Rectangle2D> platforms = new ArrayList<>();
-        ArrayList<Point2D> points = new ArrayList<>();
+    private void createLevels(ArrayList<String[]> parsedLines) {
+        int currIndex = -1;
 
-        return new Level(0, name, filePath, spawn, platforms, points);
+        for (String[] line : parsedLines) {
+            switch (line[0]) {
+                case "LEVEL" -> {
+                    this.levels.add(new Level(line[1], line[2]));
+                    currIndex++;
+                } case "SPAWN"-> {
+                    int x = Integer.parseInt(line[1]);
+                    int y = Integer.parseInt(line[2]);
+                    this.levels.get(currIndex).setSpawn(new Point2D(x, y));
+                } case "PLATFORM" -> {
+                    int x = Integer.parseInt(line[1]);
+                    int y = Integer.parseInt(line[2]);
+                    int width = Integer.parseInt(line[3]);
+                    int height = Integer.parseInt(line[4]);
+                    this.levels.get(currIndex).addPlatform(new Rectangle2D(x, y, width, height));
+                } case "POINT" -> {
+                    int x = Integer.parseInt(line[1]);
+                    int y = Integer.parseInt(line[2]);
+                    this.levels.get(currIndex).addPoint(new Point2D(x, y));
+                }
+            }
+        }
     }
 
     public static void main(String[] args) {
         LevelLoader l = new LevelLoader("/levels.txt");
 
         l.loadLevels();
+        System.out.println(l.getLevels().size());
     }
 }
