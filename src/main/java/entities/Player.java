@@ -7,8 +7,7 @@ import java.util.Map;
 import behaviors.Collidable;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.image.ImageView;
 import level.LevelTimer;
 
 /**
@@ -19,15 +18,20 @@ import level.LevelTimer;
  * once every frame (about 60 times a second with an AnimationTimer).
  */
 public class Player implements Collidable {
-    private static final double WIDTH = 30;
-    private static final double HEIGHT = 50;
+    // The sprite images are 32x32 pixels; we draw them 1.5x bigger.
+    // The hitbox is the same size as the drawn sprite.
+    private static final double WIDTH = 48;
+    private static final double HEIGHT = 48;
     private static final double MOVE_SPEED = 4;      // sideways speed
     private static final double JUMP_SPEED = 12;     // upward speed at the start of a jump
     private static final double GRAVITY = 0.6;       // added to downward speed each frame
     private static final double MAX_FALL_SPEED = 15; // so falling never gets too fast
 
     private final Group view;
-    private final Rectangle body;
+    private final ImageView sprite; // shows the current animation picture
+    private final SpriteAnimation idleAnimation;
+    private final SpriteAnimation runAnimation;
+    private SpriteAnimation currentAnimation;
     private String name;
     private final Map<Integer, Double> fastestTimes = new HashMap<>(); // level number -> best time
     private int pointsCollected = 0;
@@ -44,14 +48,32 @@ public class Player implements Collidable {
         this.x = startX;
         this.y = startY;
 
-        // TODO: swap this rectangle for Frankie's player animation frames
-        body = new Rectangle(x, y, WIDTH, HEIGHT);
-        body.setFill(Color.MAROON);
-        body.setStroke(Color.BLACK);
-        body.setArcHeight(5);
-        body.setArcWidth(5);
+        // Idle: 2 pictures, slow (each held 30 game frames = half a second)
+        idleAnimation = new SpriteAnimation(30,
+                "player/player_idle/player_idle_1.png",
+                "player/player_idle/player_idle_2.png");
 
-        view = new Group(body);
+        // Run: 8 pictures, fast (each held 6 game frames = 10 pictures a second)
+        runAnimation = new SpriteAnimation(6,
+                "player/player_run/spr_player_run_frame_1.png",
+                "player/player_run/spr_player_run_frame_2.png",
+                "player/player_run/spr_player_run_frame_3.png",
+                "player/player_run/spr_player_run_frame_4.png",
+                "player/player_run/spr_player_run_frame_5.png",
+                "player/player_run/spr_player_run_frame_6.png",
+                "player/player_run/spr_player_run_frame_7.png",
+                "player/player_run/spr_player_run_frame_8.png");
+
+        currentAnimation = idleAnimation;
+
+        sprite = new ImageView(currentAnimation.getCurrentFrame());
+        sprite.setFitWidth(WIDTH);
+        sprite.setFitHeight(HEIGHT);
+        sprite.setSmooth(false); // keep pixel art sharp instead of blurry when scaled up
+        sprite.setX(x);
+        sprite.setY(y);
+
+        view = new Group(sprite);
     }
 
     // ----- Controls (call these from key handlers) -----
@@ -97,9 +119,34 @@ public class Player implements Collidable {
             landOnPlatform(platform, oldBottom);
         }
 
-        // Move the rectangle on screen to match the new position
-        body.setX(x);
-        body.setY(y);
+        // Move the sprite on screen to match the new position
+        sprite.setX(x);
+        sprite.setY(y);
+
+        updateAnimation();
+    }
+
+    /**
+     * Picks the run or idle animation, steps it forward one frame,
+     * and flips the sprite so the player faces the way they are moving.
+     */
+    private void updateAnimation() {
+        SpriteAnimation wanted = (velocityX != 0) ? runAnimation : idleAnimation;
+        if (wanted != currentAnimation) {
+            currentAnimation = wanted;
+            currentAnimation.reset(); // start the new animation from its first picture
+        }
+
+        currentAnimation.update();
+        sprite.setImage(currentAnimation.getCurrentFrame());
+
+        // The pictures face right. A scaleX of -1 mirrors the sprite to face left.
+        // When standing still we keep whichever way the player last faced.
+        if (velocityX < 0) {
+            sprite.setScaleX(-1);
+        } else if (velocityX > 0) {
+            sprite.setScaleX(1);
+        }
     }
 
     /**
@@ -128,8 +175,8 @@ public class Player implements Collidable {
         velocityX = 0;
         velocityY = 0;
         onGround = false;
-        body.setX(x);
-        body.setY(y);
+        sprite.setX(x);
+        sprite.setY(y);
     }
 
     /** Gets the player ready for a new level: back to the start with 0 points. */
