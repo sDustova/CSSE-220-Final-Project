@@ -26,6 +26,12 @@ public class GameScene {
     private final LevelTimer timer = new LevelTimer();
     private final AnimationTimer gameLoop;
 
+    // Fixed-rate game loop: update() runs 60 times a second on any screen
+    private static final long NANOS_PER_UPDATE = 1_000_000_000L / 60; // MOVEMENT HOOK: one update = 1/60 of a second
+    private static final int MAX_UPDATES_PER_FRAME = 5;               // MOVEMENT HOOK: catch-up limit after lag
+    private long lastUpdateTime = 0;                                  // MOVEMENT HOOK: time of last update (0 = not started)
+    private boolean levelFinished = false;                            // MOVEMENT HOOK: set by finishLevel()
+
     // Which movement keys are held down right now
     private boolean leftHeld = false;
     private boolean rightHeld = false;
@@ -59,12 +65,26 @@ public class GameScene {
 
         // TODO: HUD here (player name, Rose Points collected, timer.getCurrentTime())
 
-        // Game loop: JavaFX calls handle() about 60 times a second
+        // Game loop: JavaFX calls handle() once per screen refresh (60, 120, 144... times a second) // MOVEMENT HOOK
         // TODO: replace with the team's shared game loop if someone builds one
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update();
+                if (lastUpdateTime == 0) {          // MOVEMENT HOOK: first frame, just start the clock
+                    lastUpdateTime = now;
+                    return;
+                }
+                int updates = 0;                    // MOVEMENT HOOK: run one update per full 1/60 second passed
+                while (now - lastUpdateTime >= NANOS_PER_UPDATE
+                        && updates < MAX_UPDATES_PER_FRAME
+                        && !levelFinished) {
+                    update();
+                    lastUpdateTime += NANOS_PER_UPDATE; // MOVEMENT HOOK: move forward exactly one tick
+                    updates++;
+                }
+                if (now - lastUpdateTime >= NANOS_PER_UPDATE) {
+                    lastUpdateTime = now;           // MOVEMENT HOOK: still behind after 5, skip the rest of the lag
+                }
             }
         };
         gameLoop.start();
@@ -108,6 +128,7 @@ public class GameScene {
     }
 
     private void finishLevel() {
+        levelFinished = true; // MOVEMENT HOOK: stop any catch-up updates in this frame
         gameLoop.stop();
         double seconds = timer.getCurrentTime();  // read before stop(), which resets it to 0
         player.finishLevel(levelIndex, timer);
