@@ -1,29 +1,21 @@
 ### Template
 
-# LEVEL "name" "file"
+# LEVEL name file
 # SPAWN x y
 # PLATFORM x y width height
 # POINT x y
 
-LEVEL "Tutorial" "Tutorial.png"
+LEVEL Tutorial Tutorial.png
 SPAWN 50 400
 PLATFORM 0 480 960 60
 PLATFORM 300 380 150 20
 POINT 350 340
 POINT 700 440
 
-LEVEL "White_Chapel" "Chapel.png"
+LEVEL WhiteChapel Chapel.png
 SPAWN 50 400
 PLATFORM 0 480 960 60
 PLATFORM 200 400 120 20
 PLATFORM 450 320 120 20
 POINT 240 360
 POINT 490 280
-
-LEVEL "Moench_Hall" "Moench.png"
-SPAWN 50 400
-PLATFORM 0 480 960 60
-
-LEVEL "Mussalem_Union" "Union.png"
-SPAWN 50 400
-PLATFORM 0 480 960 60

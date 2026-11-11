@@ -12,17 +12,17 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import level.LevelTimer;
+import level.Level;
 
 public class GameScene {
     private final Pane root = new Pane();
     private final SceneManager manager;
-    private final int levelIndex;
     private final Level level;
     private final double h;
 
-    private final List<Platform> platforms = new ArrayList<>();
-    private final List<Coin> rosePoints = new ArrayList<>(); // COIN HOOK: Rose Points are spinning Coins
     private final Player player;
+    private final List<Platform> platforms = new ArrayList<>();
+    private final List<Coin> rosePoints = new ArrayList<>();
     private final LevelTimer timer = new LevelTimer();
     private final AnimationTimer gameLoop;
 
@@ -36,29 +36,29 @@ public class GameScene {
     private boolean leftHeld = false;
     private boolean rightHeld = false;
 
-    public GameScene(SceneManager manager, int levelIndex, double w, double h) {
+    public GameScene(SceneManager manager, Level level, double w, double h) {
         this.manager = manager;
-        this.levelIndex = levelIndex;
-        this.level = Levels.ALL.get(levelIndex);
+        this.level = level;
         this.h = h;
 
-        root.getChildren().add(Assets.background(level.backgroundFile(), w, h));
+        root.getChildren().add(Assets.background(level.getFilePath(), w, h));
 
         // Platforms are Platform entities so the Player can land on them
         // TODO: Platform is red; change its color in Platform.java if we want Rose maroon again
-        for (Rectangle2D p : level.platforms()) {
+        for (Rectangle2D p : level.getPlatforms()) {
             Platform platform = new Platform(p.getMinX(), p.getMinY(), p.getWidth(), p.getHeight());
             platforms.add(platform);
             root.getChildren().add(platform.getView());
         }
-        for (Point2D pt : level.rosePoints()) {
+        for (Point2D pt : level.getPoints()) {
             Coin coin = new Coin(pt.getX(), pt.getY()); // COIN HOOK: centered on the point
             rosePoints.add(coin);                        // COIN HOOK
             root.getChildren().add(coin.getView());      // COIN HOOK
         }
 
         // PLAYER HOOK: add the player at the level's spawn point and listen for keys
-        player = new Player(manager.getPlayerName(), level.spawn().getX(), level.spawn().getY());
+        Point2D spawn = this.level.getSpawn();
+        player = new Player(manager.getPlayerName(), spawn.getX(), spawn.getY());
         root.getChildren().add(player.getView());
         root.setOnKeyPressed(this::handleKeyPressed);
         root.setOnKeyReleased(this::handleKeyReleased);
@@ -101,11 +101,11 @@ public class GameScene {
             player.stopMoving();
         }
 
-        player.update(platforms);
+        player.update(this.platforms);
 
         // Collect any Rose Point the player touches
         // COIN HOOK: spin each coin that is still showing, and collect it if touched
-        for (Coin coin : rosePoints) {
+        for (Coin coin : this.rosePoints) {
             if (coin.isVisible()) {
                 coin.update();
                 if (player.isColliding(coin)) {
@@ -117,12 +117,13 @@ public class GameScene {
 
         // Fell off the bottom: back to the spawn point (the clock keeps running)
         if (player.getY() > h) {
-            player.moveTo(level.spawn().getX(), level.spawn().getY());
+            Point2D spawn = this.level.getSpawn();
+            player.moveTo(spawn.getX(), spawn.getY());
         }
 
         // Level is done once every Rose Point is collected
         // TODO: Moench and Union have no Rose Points yet in Levels.java, so they can't be finished
-        if (!rosePoints.isEmpty() && player.getPointsCollected() == rosePoints.size()) {
+        if (player.getPointsCollected() == this.level.getPoints().size()) {
             finishLevel();
         }
     }
@@ -131,9 +132,9 @@ public class GameScene {
         levelFinished = true; // MOVEMENT HOOK: stop any catch-up updates in this frame
         gameLoop.stop();
         double seconds = timer.getCurrentTime();  // read before stop(), which resets it to 0
-        player.finishLevel(levelIndex, timer);
+        player.finishLevel(this.level.getId(), timer);
         timer.stop();
-        manager.completeLevel(levelIndex, seconds);
+        manager.completeLevel(this.level.getId(), seconds);
     }
 
     private void handleKeyPressed(KeyEvent event) {

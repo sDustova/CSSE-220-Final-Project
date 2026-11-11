@@ -6,6 +6,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 
 public class Level {
+    private final int id;
     private String name;
     private String filePath;
 
@@ -13,13 +14,18 @@ public class Level {
     private List<Rectangle2D> platforms;
     private List<Point2D> points;
 
-    public Level(String name, String filePath) {
+    public Level(int id, String name, String filePath) {
+        this.id = id;
         this.name = name;
         this.filePath = filePath;
 
         this.spawn = null;
         this.platforms = new ArrayList<>();
         this.points = new ArrayList<>();
+    }
+
+    public int getId() {
+        return this.id;
     }
 
     public String getName() {
