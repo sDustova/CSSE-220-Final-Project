@@ -24,6 +24,10 @@ public class LevelLoader {
         return this.levels.get(index);
     }
 
+    public String getLevelName(int index) {
+        return this.levels.get(index).getName();
+    }
+
     public void loadLevels() {
         if (!this.levels.isEmpty()) return;
 
@@ -57,8 +61,8 @@ public class LevelLoader {
         for (String[] line : parsedLines) {
             switch (line[0]) {
                 case "LEVEL" -> {
-                    this.levels.add(new Level(line[1], line[2]));
                     currIndex++;
+                    this.levels.add(new Level(currIndex, line[1], line[2]));
                 } case "SPAWN"-> {
                     int x = Integer.parseInt(line[1]);
                     int y = Integer.parseInt(line[2]);

@@ -20,11 +20,11 @@ public class LevelSelectView {
         VBox buttons = new VBox(12);
         buttons.setAlignment(Pos.CENTER);
 
-        for (int i = 0; i < Levels.ALL.size(); i++) {
+        for (int i = 0; i < manager.getNumLevels(); i++) {
             final int index = i;
             boolean unlocked = i <= manager.getUnlockedLevel();
 
-            String text = (i + 1) + ". " + Levels.ALL.get(i).name();
+            String text = (i + 1) + ". " + manager.getLevelName(i);
             Button b = new Button(unlocked ? text : text + "  (Locked)");
             b.setPrefWidth(300);
             b.setPrefHeight(40);
