@@ -1,12 +1,10 @@
 package level;
 
-import javafx.beans.property.IntegerProperty;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class LevelLoader {
@@ -20,6 +18,10 @@ public class LevelLoader {
 
     public ArrayList<Level> getLevels() {
         return this.levels;
+    }
+
+    public Level getLevel(int index) {
+        return this.levels.get(index);
     }
 
     public void loadLevels() {
@@ -74,12 +76,5 @@ public class LevelLoader {
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        LevelLoader l = new LevelLoader("/levels.txt");
-
-        l.loadLevels();
-        System.out.println(l.getLevels().size());
     }
 }
