@@ -3,6 +3,7 @@ package app;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.Coin; // COIN HOOK
 import entities.Platform;
 import entities.Player;
 import javafx.animation.AnimationTimer;
@@ -10,8 +11,6 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import level.LevelTimer;
 
 public class GameScene {
@@ -22,10 +21,16 @@ public class GameScene {
     private final double h;
 
     private final List<Platform> platforms = new ArrayList<>();
-    private final List<Circle> rosePoints = new ArrayList<>(); // TODO: swap Circles for Coin (or RosePoint) entities once Coin has an image
+    private final List<Coin> rosePoints = new ArrayList<>(); // COIN HOOK: Rose Points are spinning Coins
     private final Player player;
     private final LevelTimer timer = new LevelTimer();
     private final AnimationTimer gameLoop;
+
+    // Fixed-rate game loop: update() runs 60 times a second on any screen
+    private static final long NANOS_PER_UPDATE = 1_000_000_000L / 60; // MOVEMENT HOOK: one update = 1/60 of a second
+    private static final int MAX_UPDATES_PER_FRAME = 5;               // MOVEMENT HOOK: catch-up limit after lag
+    private long lastUpdateTime = 0;                                  // MOVEMENT HOOK: time of last update (0 = not started)
+    private boolean levelFinished = false;                            // MOVEMENT HOOK: set by finishLevel()
 
     // Which movement keys are held down right now
     private boolean leftHeld = false;
@@ -47,9 +52,9 @@ public class GameScene {
             root.getChildren().add(platform.getView());
         }
         for (Point2D pt : level.rosePoints()) {
-            Circle point = new Circle(pt.getX(), pt.getY(), 10, Color.GOLD);
-            rosePoints.add(point);
-            root.getChildren().add(point);
+            Coin coin = new Coin(pt.getX(), pt.getY()); // COIN HOOK: centered on the point
+            rosePoints.add(coin);                        // COIN HOOK
+            root.getChildren().add(coin.getView());      // COIN HOOK
         }
 
         // PLAYER HOOK: add the player at the level's spawn point and listen for keys
@@ -60,12 +65,26 @@ public class GameScene {
 
         // TODO: HUD here (player name, Rose Points collected, timer.getCurrentTime())
 
-        // Game loop: JavaFX calls handle() about 60 times a second
+        // Game loop: JavaFX calls handle() once per screen refresh (60, 120, 144... times a second) // MOVEMENT HOOK
         // TODO: replace with the team's shared game loop if someone builds one
         gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                update();
+                if (lastUpdateTime == 0) {          // MOVEMENT HOOK: first frame, just start the clock
+                    lastUpdateTime = now;
+                    return;
+                }
+                int updates = 0;                    // MOVEMENT HOOK: run one update per full 1/60 second passed
+                while (now - lastUpdateTime >= NANOS_PER_UPDATE
+                        && updates < MAX_UPDATES_PER_FRAME
+                        && !levelFinished) {
+                    update();
+                    lastUpdateTime += NANOS_PER_UPDATE; // MOVEMENT HOOK: move forward exactly one tick
+                    updates++;
+                }
+                if (now - lastUpdateTime >= NANOS_PER_UPDATE) {
+                    lastUpdateTime = now;           // MOVEMENT HOOK: still behind after 5, skip the rest of the lag
+                }
             }
         };
         gameLoop.start();
@@ -85,10 +104,14 @@ public class GameScene {
         player.update(platforms);
 
         // Collect any Rose Point the player touches
-        for (Circle point : rosePoints) {
-            if (point.isVisible() && player.getBounds().intersects(point.getBoundsInParent())) {
-                point.setVisible(false);
-                player.collectPoint();
+        // COIN HOOK: spin each coin that is still showing, and collect it if touched
+        for (Coin coin : rosePoints) {
+            if (coin.isVisible()) {
+                coin.update();
+                if (player.isColliding(coin)) {
+                    coin.setVisible(false);
+                    player.collectPoint();
+                }
             }
         }
 
@@ -105,6 +128,7 @@ public class GameScene {
     }
 
     private void finishLevel() {
+        levelFinished = true; // MOVEMENT HOOK: stop any catch-up updates in this frame
         gameLoop.stop();
         double seconds = timer.getCurrentTime();  // read before stop(), which resets it to 0
         player.finishLevel(levelIndex, timer);

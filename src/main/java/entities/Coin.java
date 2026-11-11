@@ -3,59 +3,45 @@ package entities;
 import behaviors.Collidable;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class Coin implements Collidable {
     private Group view;
-    private final double FIT_HEIGHT = 50;
-    private final double FIT_WIDTH= 50;
+    // COIN HOOK: the coin pictures are 16x16 pixels; we draw them at 24x24
+    private static final double SIZE = 24;
 
-    private final String[] framesImage = {"/images/collectable/coin/coin_frame_1 (1).png","/images/collectable/coin/coin_frame_1 (2).png","/images/collectable/coin/coin_frame_1 (3).png","/images/collectable/coin/coin_frame_1 (4).png"};
-    private ImageView[] frames = new ImageView[4];
-    private int frameAt=0;
+    // COIN HOOK: one ImageView whose picture is swapped each frame, like Player
+    private final ImageView sprite;
+    // COIN HOOK: 4 spin pictures, each held 8 game frames (one full spin is about half a second)
+    private final SpriteAnimation spin = new SpriteAnimation(8,
+            "collectable/coin/coin_frame_1 (1).png",
+            "collectable/coin/coin_frame_1 (2).png",
+            "collectable/coin/coin_frame_1 (3).png",
+            "collectable/coin/coin_frame_1 (4).png");
 
     public Coin(){
-//        Image image = null;
-//        ImageView coin = new ImageView(image);
-//        coin.setFitHeight(FIT_HEIGHT);
-//        coin.setFitWidth(FIT_WIDTH);
-//        coin.setPreserveRatio(true);
-        makeFrames(0,0);
-        view = new Group(frames[0]);
+        this(0, 0); // COIN HOOK: same as a coin centered on (0, 0)
     }
+
+    /** Makes a coin centered on the point (x, y). */
     public Coin(double x, double y){
-//        Image image = null;
-//        ImageView coin = new ImageView(image);
-//        coin.setFitHeight(FIT_HEIGHT);
-//        coin.setFitWidth(FIT_WIDTH);
-//        coin.setPreserveRatio(true);
-//        coin.setX(x);
-//        coin.setY(y);
-        makeFrames(x,y);
-        view = new Group(frames[0]);
+        // COIN HOOK: build the sprite and center it on (x, y)
+        sprite = new ImageView(spin.getCurrentFrame());
+        sprite.setFitWidth(SIZE);
+        sprite.setFitHeight(SIZE);
+        sprite.setSmooth(false); // keep pixel art sharp instead of blurry when scaled up
+        sprite.setX(x - SIZE / 2);
+        sprite.setY(y - SIZE / 2);
+        view = new Group(sprite);
     }
 
     public Group getView() {return view;}
 
-    public void makeFrames(double x, double y){
-        for (int i=0;i<frames.length;i++){
-            Image image = new Image(Coin.class.getResource(framesImage[0]).toExternalForm());
-            frames[i] = new ImageView(image);
-            frames[i].setFitHeight(FIT_HEIGHT);
-            frames[i].setFitWidth(FIT_WIDTH);
-            frames[i].setPreserveRatio(true);
-            frames[i].setX(x);
-            frames[i].setY(y);
-        }
-    };
-
+    /** Call once per game frame to spin the coin. */
     public void update(){
-        frameAt++;
-        if (frameAt==frames.length)
-            frameAt=0;
-        view.getChildren().clear();
-        view.getChildren().addAll(frames[frameAt]);
+        // COIN HOOK: step the animation and show its current picture
+        spin.update();
+        sprite.setImage(spin.getCurrentFrame());
     }
 
     public boolean isVisible(){return view.isVisible();}
