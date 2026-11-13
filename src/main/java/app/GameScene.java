@@ -132,7 +132,10 @@ public class GameScene {
         // Fell off the bottom: back to the spawn point (the clock keeps running)
         if (player.getY() > h) {
             Point2D spawn = this.level.getSpawn();
-            player.moveTo(spawn.getX(), spawn.getY());
+            player.resetForLevel(spawn.getX(), spawn.getY()); // RESPAWN HOOK: back to spawn with 0 points
+            for (Coin coin : this.rosePoints) {               // RESPAWN HOOK: every Rose Point comes back
+                coin.setVisible(true);
+            }
         }
 
         // Level is done once every Rose Point is collected
