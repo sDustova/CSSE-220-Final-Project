@@ -10,6 +10,7 @@ public class SceneManager {
     private final Scene scene = new Scene(new StackPane(), W, H);
     private String playerName;
     private int unlockedLevel = 0;   // index of the highest playable level
+    private double bestTime = 0;
     private double totalTime = 0;    // seconds across the current run
     private final LevelLoader loader = new LevelLoader("/levels.txt");
 
@@ -59,6 +60,7 @@ public class SceneManager {
         unlockedLevel = Math.max(unlockedLevel, index + 1);
         if (index + 1 >= this.loader.getLevels().size()) {
             showEnd();
+            this.totalTime = 0;
         } else {
             startLevel(index + 1);
         }
