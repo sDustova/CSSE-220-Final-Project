@@ -17,7 +17,6 @@
 
 # 1: learn to walk and hop over small pits
 LEVEL Tutorial Tutorial.png
-LORE Day 1. Orientation said every class is "a short walk away." Orientation lied. Collect the Rose Points to prove you showed up.
 SPAWN 40 400
 PLATFORM 0 480 360 60
 PLATFORM 180 410 110 20
@@ -34,7 +33,6 @@ POINT 850 360
 
 # 2: Evan's staircase
 LEVEL Moench_Hall Moench.png
-LORE Moench Hall: the hallway is a mile long and your class is, of course, at the very end. Take the stairs. There are always more stairs.
 SPAWN 50 400
 PLATFORM 0 480 200 60
 PLATFORM 250 420 100 20
@@ -46,7 +44,6 @@ POINT 620 250
 
 # 3: Evan's zig-zag over a pit
 LEVEL Mussallem_Union Union.png
-LORE The Union floor was just waxed. Do NOT touch the floor. Lunch closes in five minutes.
 SPAWN 50 400
 PLATFORM 0 480 130 60
 PLATFORM 180 410 100 20
@@ -59,7 +56,6 @@ POINT 685 260
 
 # 4: first moving platforms, slow and sideways, safe floor underneath
 LEVEL White_Chapel Chapel.png
-LORE White Chapel: the furniture has started moving on its own again. Facilities says this is "a known issue."
 SPAWN 40 400
 PLATFORM 0 480 960 60
 PLATFORM 140 400 100 20
@@ -75,7 +71,6 @@ POINT 860 450
 
 # 5: elevators, smaller ledges, real pits
 LEVEL Speed_Lake SpeedLake.png
-LORE Speed Lake: the geese have taken the last Rose Points hostage. Do not make eye contact. Do not fall in.
 SPAWN 30 400
 PLATFORM 0 480 140 60
 MOVING 180 470 80 20 0 -220 1.4
@@ -96,7 +91,7 @@ POINT 400 80
 
 # 6: everything at once, fast movers, tiny ledges, no floor
 LEVEL Logan_Library LoganLibrary.png
-LORE Logan Library, finals week. The bookshelves are moving. You have not slept since Tuesday. Grab every Rose Point and graduate.
+LORE 2:47 AM, finals week. Your study guide is one sticky note that just says "study." The bookshelves have started moving, and honestly, same. Grab every Rose Point before the librarian notices you have lived here since Tuesday.
 SPAWN 30 400
 PLATFORM 0 480 100 60
 MOVING 140 480 70 20 0 -220 2.0

@@ -38,10 +38,11 @@ public class GameScene {
     private boolean levelFinished = false;                            // MOVEMENT HOOK: set by finishLevel()
 
     // LORE HOOK: a text box at the top that shows the level's story, then hides
-    private static final int LORE_UPDATES = 360;      // LORE HOOK: 6 seconds at 60 updates a second
+    private static final int LORE_UPDATES = 600;      // LORE HOOK: 10 seconds at 60 updates a second
     private static final int FALL_JOKE_UPDATES = 150; // LORE HOOK: 2.5 seconds
     private final Label loreLabel = new Label();      // LORE HOOK
     private int loreUpdatesLeft = LORE_UPDATES;       // LORE HOOK: counts down to 0, then the box hides
+    private boolean hasLore;                          // LORE HOOK: only levels with a LORE line show any text
 
     // Which movement keys are held down right now
     private boolean leftHeld = false;
@@ -90,6 +91,11 @@ public class GameScene {
         loreLabel.setLayoutX(20);
         loreLabel.setLayoutY(20);
         root.getChildren().add(loreLabel);
+        hasLore = !lore.isEmpty();                    // LORE HOOK: no LORE line = no text box at all
+        if (!hasLore) {
+            loreLabel.setVisible(false);
+            loreUpdatesLeft = 0;
+        }
 
         // TODO: HUD here (player name, Rose Points collected, timer.getCurrentTime())
 
@@ -155,9 +161,11 @@ public class GameScene {
             for (Coin coin : this.rosePoints) {               // RESPAWN HOOK: every Rose Point comes back
                 coin.setVisible(true);
             }
-            loreLabel.setText(LevelLore.randomFallJoke());   // LORE HOOK: a joke when you fall
-            loreLabel.setVisible(true);
-            loreUpdatesLeft = FALL_JOKE_UPDATES;
+            if (hasLore) {                                    // LORE HOOK: a joke when you fall (library only)
+                loreLabel.setText(LevelLore.randomFallJoke());
+                loreLabel.setVisible(true);
+                loreUpdatesLeft = FALL_JOKE_UPDATES;
+            }
         }
 
         // LORE HOOK: count down and hide the text box when time is up

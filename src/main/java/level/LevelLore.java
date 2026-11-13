@@ -17,15 +17,16 @@ import java.util.Scanner;
 public final class LevelLore {
     private LevelLore() {}
 
-    // Shown when the player falls off the level
+    // Shown when the player falls off a level that has LORE (right now, only Logan Library)
     private static final String[] FALL_JOKES = {
-            "You fell. The Rose Points went back to where they came from.",
-            "Gravity: 1. You: 0. You still have a physics exam on Friday.",
-            "Respawned. Your tuition did not.",
-            "That is going on your transcript.",
-            "The geese saw that.",
-            "Pro tip: the platforms are the parts you stand on.",
-            "Your lab partner would like to know where you went.",
+            "SHHHHH! Falling is a LOUD activity. Signed, the Librarian.",
+            "Gravity was on the exam. You did not study gravity.",
+            "Respawning... please wait while your GPA recalculates.",
+            "Somewhere, your group project partner felt a disturbance and did nothing about it.",
+            "You dropped all your Rose Points and your last good pencil. Only one of those respawns.",
+            "The book you landed on is now 3 years overdue. That will be $40.",
+            "Your professor saw that and is curving this level. Down.",
+            "The geese saw that. The geese are in the library now. Nobody knows how.",
     };
     private static final Random RANDOM = new Random();
 
