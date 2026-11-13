@@ -41,6 +41,7 @@ public class GameScene {
     private static final int LORE_UPDATES = 600;      // LORE HOOK: 10 seconds at 60 updates a second
     private static final int FALL_JOKE_UPDATES = 150; // LORE HOOK: 2.5 seconds
     private final Label loreLabel = new Label();      // LORE HOOK
+    private final Label hud = new Label();            // HUD HOOK: level, Rose Points, and time
     private int loreUpdatesLeft = LORE_UPDATES;       // LORE HOOK: counts down to 0, then the box hides
     private boolean hasLore;                          // LORE HOOK: only levels with a LORE line show any text
 
@@ -89,7 +90,7 @@ public class GameScene {
         loreLabel.setWrapText(true);
         loreLabel.setMaxWidth(w - 40);
         loreLabel.setLayoutX(20);
-        loreLabel.setLayoutY(20);
+        loreLabel.setLayoutY(60); // HUD HOOK: moved down so it sits under the HUD
         root.getChildren().add(loreLabel);
         hasLore = !lore.isEmpty();                    // LORE HOOK: no LORE line = no text box at all
         if (!hasLore) {
@@ -97,7 +98,13 @@ public class GameScene {
             loreUpdatesLeft = 0;
         }
 
-        // TODO: HUD here (player name, Rose Points collected, timer.getCurrentTime())
+        // HUD HOOK: one line at the top showing level, Rose Points, and time (refreshed every update)
+        hud.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 6 12;"
+                + " -fx-background-color: rgba(0,0,0,0.65); -fx-background-radius: 8;");
+        hud.setLayoutX(20);
+        hud.setLayoutY(10);
+        root.getChildren().add(hud);
+        updateHud();
 
         // Game loop: JavaFX calls handle() once per screen refresh (60, 120, 144... times a second) // MOVEMENT HOOK
         // TODO: replace with the team's shared game loop if someone builds one
@@ -136,6 +143,14 @@ public class GameScene {
         }
 
         player.update(this.platforms);
+
+        // BOUNDS HOOK: keep the player inside the left and right edges of the screen
+        double playerWidth = player.getBounds().getWidth();
+        if (player.getX() < 0) {
+            player.carry(-player.getX(), 0);
+        } else if (player.getX() > SceneManager.W - playerWidth) {
+            player.carry(SceneManager.W - playerWidth - player.getX(), 0);
+        }
 
         // MOVING PLATFORM HOOK: slide each moving platform and carry the player if riding it
         for (MovingPlatform mover : movingPlatforms) {
@@ -176,8 +191,9 @@ public class GameScene {
             }
         }
 
+        updateHud(); // HUD HOOK: show the newest numbers from the model
+
         // Level is done once every Rose Point is collected
-        // TODO: Moench and Union have no Rose Points yet in Levels.java, so they can't be finished
         if (player.getPointsCollected() == this.level.getPoints().size()) {
             finishLevel();
         }
@@ -207,6 +223,14 @@ public class GameScene {
             case RIGHT, D -> rightHeld = false;
             default -> { }
         }
+    }
+
+    /** HUD HOOK: rebuilds the HUD text from the level, the player, and the timer. */
+    private void updateHud() {
+        hud.setText(String.format("Level %d/%d: %s     Rose Points: %d/%d     Time: %.1f s",
+                level.getId() + 1, manager.getNumLevels(), level.getName().replace('_', ' '),
+                player.getPointsCollected(), level.getPoints().size(),
+                timer.getCurrentTime()));
     }
 
     public Pane getRoot() { return root; }

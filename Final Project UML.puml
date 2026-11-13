@@ -1,93 +1,186 @@
 @startuml
 
-title Rose Runner - Class Diagram
+title Rose Runner - Class Diagram (final)
 
-class RoseRunnerApp {
-    +start()
-    +showWelcomeScene()
-    +showLevelSelectScene()
-    +showGameScene()
-    +showEndScene()
+package app {
+    class RoseRunnerApp {
+        +start(stage : Stage)
+        +main(args : String[])
+    }
+
+    class SceneManager {
+        +W : double
+        +H : double
+        -playerName : String
+        -unlockedLevel : int
+        -totalTime : double
+        -loader : LevelLoader
+        +showWelcome()
+        +showLevelSelect()
+        +startLevel(index : int)
+        +completeLevel(index : int, seconds : double)
+        +showEnd()
+        +getNumLevels() : int
+    }
+
+    class WelcomeView {
+        +getRoot() : StackPane
+    }
+
+    class LevelSelectView {
+        +getRoot() : StackPane
+    }
+
+    class GameScene {
+        -platforms : List<Platform>
+        -movingPlatforms : List<MovingPlatform>
+        -rosePoints : List<Coin>
+        -gameLoop : AnimationTimer
+        -hud : Label
+        -loreLabel : Label
+        -update()
+        -updateHud()
+        -finishLevel()
+        -handleKeyPressed(event : KeyEvent)
+        -handleKeyReleased(event : KeyEvent)
+        +getRoot() : Pane
+    }
+
+    class EndView {
+        +getRoot() : StackPane
+    }
+
+    class Assets {
+        +image(fileName : String) : Image
+        +background(fileName : String, w : double, h : double) : ImageView
+    }
 }
 
-class Player {
-    -name : String
-    -fastestTimes : Map
-    +moveLeft()
-    +moveRight()
-    +jump()
-    +collectPoint()
+package entities {
+    class Player {
+        -name : String
+        -x : double
+        -y : double
+        -velocityX : double
+        -velocityY : double
+        -onGround : boolean
+        -pointsCollected : int
+        -fastestTimes : Map<Integer, Double>
+        +moveLeft()
+        +moveRight()
+        +stopMoving()
+        +jump()
+        +update(platforms : List<Platform>)
+        +carry(dx : double, dy : double)
+        +moveTo(x : double, y : double)
+        +resetForLevel(x : double, y : double)
+        +collectPoint()
+        +finishLevel(levelNumber : int, timer : LevelTimer)
+    }
+
+    class Platform {
+        +getView() : Group
+        +getBounds() : Bounds
+    }
+
+    class MovingPlatform {
+        -pathX : double
+        -pathY : double
+        -speed : double
+        -distance : double
+        -direction : int
+        +update(player : Player)
+    }
+
+    class Coin {
+        +update()
+        +isVisible() : boolean
+        +setVisible(visible : boolean)
+        +getBounds() : Bounds
+    }
+
+    class SpriteAnimation {
+        -frames : Image[]
+        -ticksPerFrame : int
+        +update()
+        +reset()
+        +getCurrentFrame() : Image
+    }
 }
 
-class Level {
-    -levelNumber : int
-    -isUnlocked : boolean
-    -requiredPoints : int
-    +loadLevel()
-    +checkCompletion()
+package behaviors {
+    interface Collidable {
+        +isColliding(other : Collidable) : boolean
+        +getBounds() : Bounds
+    }
 }
 
-class TutorialLevel {
-    +showInstructions()
+package level {
+    class Level {
+        -id : int
+        -name : String
+        -filePath : String
+        -spawn : Point2D
+        -platforms : List<Rectangle2D>
+        -points : List<Point2D>
+        +getId() : int
+        +getName() : String
+        +getSpawn() : Point2D
+        +getPlatforms() : List<Rectangle2D>
+        +getPoints() : List<Point2D>
+    }
+
+    class LevelLoader {
+        -levels : ArrayList<Level>
+        +loadLevels()
+        +getLevel(index : int) : Level
+        +getLevels() : ArrayList<Level>
+    }
+
+    class MovingPlatformLoader {
+        +loadForLevel(file : String, levelId : int) : List<MovingPlatform>
+    }
+
+    class LevelLore {
+        +loadForLevel(file : String, levelId : int) : String
+        +randomFallJoke() : String
+    }
+
+    class LevelTimer {
+        -currentTime : DoubleProperty
+        +start()
+        +pause()
+        +stop()
+        +getCurrentTime() : double
+    }
 }
 
-class RosePoint {
-    -collected : boolean
-    +collect()
-}
+RoseRunnerApp --> SceneManager : creates
+SceneManager --> WelcomeView : shows
+SceneManager --> LevelSelectView : shows
+SceneManager --> GameScene : shows
+SceneManager --> EndView : shows
+SceneManager *-- LevelLoader
 
-class Timer {
-    -currentTime : double
-    +start()
-    +stop()
-    +reset()
-}
+LevelLoader "1" *-- "many" Level : reads levels.txt
 
-class ScoreManager {
-    -fastestTimes : Map
-    +saveTime(playerName, time)
-    +getBestTime(level)
-}
-
-class WelcomeScene {
-    +enterName()
-    +startGame()
-}
-
-class LevelSelectScene {
-    +displayLevels()
-    +selectLevel()
-}
-
-class GameScene {
-    +displayHUD()
-    +updateGame()
-}
-
-class EndScene {
-    +showResults()
-}
-
-RoseRunnerApp --> WelcomeScene
-RoseRunnerApp --> LevelSelectScene
-RoseRunnerApp --> GameScene
-RoseRunnerApp --> EndScene
-
-Player --> Timer
-Player --> RosePoint : collects
-
-Level <|-- TutorialLevel
-
-GameScene --> Player
 GameScene --> Level
-GameScene --> Timer
+GameScene *-- Player
+GameScene *-- "many" Platform
+GameScene *-- "many" Coin
+GameScene *-- LevelTimer
+GameScene ..> MovingPlatformLoader : uses
+GameScene ..> LevelLore : uses
+GameScene --> SceneManager : completeLevel()
 
-Level "1" *-- "many" RosePoint
+Collidable <|.. Player
+Collidable <|.. Platform
+Collidable <|.. Coin
+Platform <|-- MovingPlatform
+MovingPlatform ..> Player : carries
 
-ScoreManager --> Player
-ScoreManager --> Level
-
-LevelSelectScene --> Level
-WelcomeScene --> Player
+Player *-- "2" SpriteAnimation : idle, run
+Coin *-- SpriteAnimation : spin
+Player ..> LevelTimer : records time
 
 @enduml
