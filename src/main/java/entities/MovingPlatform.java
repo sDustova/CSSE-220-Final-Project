@@ -13,6 +13,7 @@ import javafx.scene.Node;
  * player along if they are standing on it.
  */
 public class MovingPlatform extends Platform {
+    private static final double LAND_GAP = 0.01; // pixels; too small to see
     private final double pathX;      // how far it travels right (negative = left)
     private final double pathY;      // how far it travels down (negative = up)
     private final double pathLength; // straight-line length of the trip
@@ -63,13 +64,18 @@ public class MovingPlatform extends Platform {
         double moveY = shape.getTranslateY() - oldY;
         double newTop = getBounds().getMinY();
 
+        // Where the rider's feet go: a hair above the new top. Decimal rounding can
+        // leave the feet a tiny fraction below the top, and then Player decides
+        // it did not land. The small gap makes the landing check pass every time.
+        double feetTarget = newTop - LAND_GAP;
+
         if (riding) {
-            // Carry the rider the same amount the platform moved
-            player.carry(moveX, moveY);
+            // Carry the rider sideways with the platform and set their feet on its top
+            player.carry(moveX, feetTarget - feet.getMaxY());
         } else if (overlapsSideways && feet.getMaxY() <= oldTop && feet.getMaxY() > newTop) {
             // The platform rose up past the falling player's feet this step.
             // Put the feet back on top so the player lands instead of falling through.
-            player.carry(0, newTop - feet.getMaxY());
+            player.carry(0, feetTarget - feet.getMaxY());
         }
     }
 }
