@@ -74,8 +74,7 @@ POINT 870 160
 POINT 860 450
 
 # 5: elevators, smaller ledges, real pits
-# TODO: switch Chapel.png to SpeedLake.png once that picture is added
-LEVEL Speed_Lake Chapel.png
+LEVEL Speed_Lake SpeedLake.png
 LORE Speed Lake: the geese have taken the last Rose Points hostage. Do not make eye contact. Do not fall in.
 SPAWN 30 400
 PLATFORM 0 480 140 60
@@ -96,8 +95,7 @@ POINT 620 130
 POINT 400 80
 
 # 6: everything at once, fast movers, tiny ledges, no floor
-# TODO: switch Moench.png to LoganLibrary.png once that picture is added
-LEVEL Logan_Library Moench.png
+LEVEL Logan_Library LoganLibrary.png
 LORE Logan Library, finals week. The bookshelves are moving. You have not slept since Tuesday. Grab every Rose Point and graduate.
 SPAWN 30 400
 PLATFORM 0 480 100 60
