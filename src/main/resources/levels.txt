@@ -31,7 +31,7 @@ POINT 565 370
 POINT 685 420
 POINT 850 360
 
-# 2: Evan's staircase
+# 2: staircase
 LEVEL Moench_Hall Moench.png
 SPAWN 50 400
 PLATFORM 0 480 200 60
@@ -42,7 +42,7 @@ PLATFORM 760 360 200 20
 POINT 290 380
 POINT 620 250
 
-# 3: Evan's zig-zag over a pit
+# 3: zig-zag over pit
 LEVEL Mussallem_Union Union.png
 SPAWN 50 400
 PLATFORM 0 480 130 60
