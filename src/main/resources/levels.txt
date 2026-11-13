@@ -4,22 +4,34 @@
 # SPAWN x y
 # PLATFORM x y width height
 # POINT x y
+# MOVING x y width height pathX pathY speed
+#   A moving platform starts with its top-left at (x, y), slides pathX right
+#   and pathY down (negative = left/up), then slides back. speed = pixels per update.
+#   MOVING lines are read by MovingPlatformLoader; LevelLoader skips them.
+# LORE any text
+#   A line of story shown when the level starts. Read by LevelLore; LevelLoader skips it.
 
+# The screen is 960 x 540. The player is 48 x 48 and can jump about 110 pixels up.
+# Levels get harder in order: 1-3 have no moving platforms, 4 introduces them
+# slowly over a safe floor, 5 adds elevators and pits, 6 combines everything.
+
+# 1: learn to walk and hop over small pits
 LEVEL Tutorial Tutorial.png
-SPAWN 50 400
-PLATFORM 0 480 960 60
-PLATFORM 300 380 150 20
-POINT 350 340
-POINT 700 440
+SPAWN 40 400
+PLATFORM 0 480 360 60
+PLATFORM 180 410 110 20
+PLATFORM 430 480 220 60
+PLATFORM 520 400 90 20
+PLATFORM 720 480 240 60
+PLATFORM 800 390 100 20
+POINT 100 450
+POINT 235 380
+POINT 395 420
+POINT 565 370
+POINT 685 420
+POINT 850 360
 
-LEVEL White_Chapel Chapel.png
-SPAWN 50 400
-PLATFORM 0 480 960 60
-PLATFORM 200 400 120 20
-PLATFORM 450 320 120 20
-POINT 240 360
-POINT 490 280
-
+# 2: Evan's staircase
 LEVEL Moench_Hall Moench.png
 SPAWN 50 400
 PLATFORM 0 480 200 60
@@ -30,6 +42,7 @@ PLATFORM 760 360 200 20
 POINT 290 380
 POINT 620 250
 
+# 3: Evan's zig-zag over a pit
 LEVEL Mussallem_Union Union.png
 SPAWN 50 400
 PLATFORM 0 480 130 60
@@ -40,3 +53,60 @@ PLATFORM 650 300 100 20
 PLATFORM 820 390 140 20
 POINT 375 290
 POINT 685 260
+
+# 4: first moving platforms, slow and sideways, safe floor underneath
+LEVEL White_Chapel Chapel.png
+SPAWN 40 400
+PLATFORM 0 480 960 60
+PLATFORM 140 400 100 20
+MOVING 300 330 100 20 200 0 1.0
+PLATFORM 660 260 110 20
+PLATFORM 820 190 100 20
+POINT 190 370
+POINT 450 300
+POINT 550 230
+POINT 715 230
+POINT 870 160
+POINT 860 450
+
+# 5: elevators, smaller ledges, real pits
+LEVEL Speed_Lake SpeedLake.png
+SPAWN 30 400
+PLATFORM 0 480 140 60
+MOVING 180 470 80 20 0 -220 1.4
+PLATFORM 320 250 70 20
+PLATFORM 450 310 70 20
+MOVING 570 310 80 20 180 0 1.8
+PLATFORM 880 240 80 20
+MOVING 760 160 80 20 -280 0 1.6
+PLATFORM 360 110 80 20
+POINT 70 450
+POINT 220 360
+POINT 355 220
+POINT 485 280
+POINT 700 240
+POINT 920 210
+POINT 620 130
+POINT 400 80
+
+# 6: everything at once, fast movers, tiny ledges, no floor
+LEVEL Logan_Library LoganLibrary.png
+LORE 2:47 AM, finals week. Your study guide is one sticky note that just says "study." The bookshelves have started moving, and honestly, same. Grab every Rose Point before the librarian notices you have lived here since Tuesday.
+SPAWN 30 400
+PLATFORM 0 480 100 60
+MOVING 140 480 70 20 0 -220 2.0
+PLATFORM 260 260 50 20
+MOVING 360 260 70 20 200 -70 2.2
+PLATFORM 690 190 50 20
+MOVING 790 190 70 20 0 230 2.4
+PLATFORM 650 420 60 20
+MOVING 540 420 60 20 -300 0 2.4
+POINT 50 450
+POINT 175 370
+POINT 285 230
+POINT 495 190
+POINT 715 160
+POINT 825 300
+POINT 680 390
+POINT 450 350
+POINT 270 390
