@@ -10,11 +10,13 @@ import entities.Player;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.control.Label; // LORE HOOK
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import level.LevelTimer;
 import level.Level;
 import level.MovingPlatformLoader; // MOVING PLATFORM HOOK
+import level.LevelLore; // LORE HOOK
 
 public class GameScene {
     private final Pane root = new Pane();
@@ -34,6 +36,12 @@ public class GameScene {
     private static final int MAX_UPDATES_PER_FRAME = 5;               // MOVEMENT HOOK: catch-up limit after lag
     private long lastUpdateTime = 0;                                  // MOVEMENT HOOK: time of last update (0 = not started)
     private boolean levelFinished = false;                            // MOVEMENT HOOK: set by finishLevel()
+
+    // LORE HOOK: a text box at the top that shows the level's story, then hides
+    private static final int LORE_UPDATES = 360;      // LORE HOOK: 6 seconds at 60 updates a second
+    private static final int FALL_JOKE_UPDATES = 150; // LORE HOOK: 2.5 seconds
+    private final Label loreLabel = new Label();      // LORE HOOK
+    private int loreUpdatesLeft = LORE_UPDATES;       // LORE HOOK: counts down to 0, then the box hides
 
     // Which movement keys are held down right now
     private boolean leftHeld = false;
@@ -71,6 +79,17 @@ public class GameScene {
         root.getChildren().add(player.getView());
         root.setOnKeyPressed(this::handleKeyPressed);
         root.setOnKeyReleased(this::handleKeyReleased);
+
+        // LORE HOOK: show the level name (underscores as spaces) and its story at the top
+        String lore = LevelLore.loadForLevel("/levels.txt", level.getId());
+        loreLabel.setText(level.getName().replace('_', ' ') + "\n" + lore);
+        loreLabel.setStyle("-fx-font-size: 18px; -fx-text-fill: white; -fx-padding: 10;"
+                + " -fx-background-color: rgba(0,0,0,0.65); -fx-background-radius: 8;");
+        loreLabel.setWrapText(true);
+        loreLabel.setMaxWidth(w - 40);
+        loreLabel.setLayoutX(20);
+        loreLabel.setLayoutY(20);
+        root.getChildren().add(loreLabel);
 
         // TODO: HUD here (player name, Rose Points collected, timer.getCurrentTime())
 
@@ -135,6 +154,17 @@ public class GameScene {
             player.resetForLevel(spawn.getX(), spawn.getY()); // RESPAWN HOOK: back to spawn with 0 points
             for (Coin coin : this.rosePoints) {               // RESPAWN HOOK: every Rose Point comes back
                 coin.setVisible(true);
+            }
+            loreLabel.setText(LevelLore.randomFallJoke());   // LORE HOOK: a joke when you fall
+            loreLabel.setVisible(true);
+            loreUpdatesLeft = FALL_JOKE_UPDATES;
+        }
+
+        // LORE HOOK: count down and hide the text box when time is up
+        if (loreUpdatesLeft > 0) {
+            loreUpdatesLeft--;
+            if (loreUpdatesLeft == 0) {
+                loreLabel.setVisible(false);
             }
         }
 
