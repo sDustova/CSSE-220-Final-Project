@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import entities.Coin; // COIN HOOK
+import entities.MovingPlatform; // MOVING PLATFORM HOOK
 import entities.Platform;
 import entities.Player;
 import javafx.animation.AnimationTimer;
@@ -13,6 +14,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import level.LevelTimer;
 import level.Level;
+import level.MovingPlatformLoader; // MOVING PLATFORM HOOK
 
 public class GameScene {
     private final Pane root = new Pane();
@@ -23,6 +25,7 @@ public class GameScene {
     private final Player player;
     private final List<Platform> platforms = new ArrayList<>();
     private final List<Coin> rosePoints = new ArrayList<>();
+    private final List<MovingPlatform> movingPlatforms; // MOVING PLATFORM HOOK: also inside platforms, so the player lands on them
     private final LevelTimer timer = new LevelTimer();
     private final AnimationTimer gameLoop;
 
@@ -49,6 +52,12 @@ public class GameScene {
             Platform platform = new Platform(p.getMinX(), p.getMinY(), p.getWidth(), p.getHeight());
             platforms.add(platform);
             root.getChildren().add(platform.getView());
+        }
+        // MOVING PLATFORM HOOK: read this level's MOVING lines (same file SceneManager loads)
+        movingPlatforms = MovingPlatformLoader.loadForLevel("/levels.txt", level.getId());
+        for (MovingPlatform mover : movingPlatforms) { // MOVING PLATFORM HOOK
+            platforms.add(mover);                      // MOVING PLATFORM HOOK
+            root.getChildren().add(mover.getView());   // MOVING PLATFORM HOOK
         }
         for (Point2D pt : level.getPoints()) {
             Coin coin = new Coin(pt.getX(), pt.getY()); // COIN HOOK: centered on the point
@@ -102,6 +111,11 @@ public class GameScene {
         }
 
         player.update(this.platforms);
+
+        // MOVING PLATFORM HOOK: slide each moving platform and carry the player if riding it
+        for (MovingPlatform mover : movingPlatforms) {
+            mover.update(player);
+        }
 
         // Collect any Rose Point the player touches
         // COIN HOOK: spin each coin that is still showing, and collect it if touched

@@ -179,6 +179,17 @@ public class Player implements Collidable {
         sprite.setY(y);
     }
 
+    /**
+     * MOVING PLATFORM HOOK: shifts the player by (dx, dy) without changing speed
+     * or onGround, so a moving platform can carry the player and they can still jump.
+     */
+    public void carry(double dx, double dy) {
+        x += dx;
+        y += dy;
+        sprite.setX(x);
+        sprite.setY(y);
+    }
+
     /** Gets the player ready for a new level: back to the start with 0 points. */
     public void resetForLevel(double startX, double startY) {
         moveTo(startX, startY);
